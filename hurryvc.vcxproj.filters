@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{2F491ACB-1E3A-4A07-8B8F-C05F0E61F645}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F214D626-5130-49DD-BD22-4E8240A64EC1}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{5730236A-E9D2-4741-970B-86FF291CD78F}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="cpp">
+      <UniqueIdentifier>{F3D41401-462E-44D3-A158-5D11DC91068C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{F9FDD40A-9896-4A30-A76B-CF3C74E6DE74}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cpp\cppmain.cpp">
+      <Filter>cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="cpp\ptyrun.cpp">
+      <Filter>cpp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="cpp\newexe-manifest.xml">
+      <Filter>cpp</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cpp\resource.h">
+      <Filter>cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="cpp\ptyrun.h">
+      <Filter>cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="cpp\pch.h">
+      <Filter>cpp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="cpp\Resource.rc">
+      <Filter>cpp</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="cpp\wk.ico">
+      <Filter>cpp</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\cxxrt.rs">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\main.rs">
+      <Filter>src</Filter>
+    </None>
+    <None Include="build.rs" />
+    <None Include="Cargo.toml" />
+    <None Include="src\cli.rs">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\producer.rs">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\protocol.rs">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\registry.rs">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\server.rs">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\terminal.rs">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\util.rs">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+</Project>

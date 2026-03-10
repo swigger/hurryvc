@@ -1,0 +1,26 @@
+.DS_Store
+cpp/cxxrt.h
+/target/
+node_modules/
+*.tmp
+tmp.*
+*.zip
+
+# msvc related
+.vs/
+*.aps
+*.pdb
+*.exe
+*.lib
+*.user
+
+.vscode/
+.idea/
+
+# AI
+.factory/
+
+
+# exceptions
+!libs/*.lib
+!libs/*.exe
