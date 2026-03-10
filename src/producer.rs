@@ -706,18 +706,27 @@ fn stdio_kind(handle: isize) -> StdIoKind {
 impl ResolvedRunArgs {
     fn load(args: RunArgs) -> Result<Self> {
         let run_config = crate::run_config::load_or_create()?;
-        let fallback_master_key = server_config::load_existing()?.master_key;
+        let fallback_master_key = if Self::has_explicit_master_key(args.master_key.as_deref()) {
+            None
+        } else {
+            Some(server_config::load_existing()?.master_key)
+        };
         Ok(Self::from_sources(args, run_config, fallback_master_key))
+    }
+
+    fn has_explicit_master_key(master_key: Option<&str>) -> bool {
+        matches!(master_key, Some(value) if !value.trim().is_empty())
     }
 
     fn from_sources(
         args: RunArgs,
         run_config: crate::run_config::RunConfig,
-        fallback_master_key: String,
+        fallback_master_key: Option<String>,
     ) -> Self {
         let master_key = match args.master_key {
             Some(master_key) if !master_key.trim().is_empty() => master_key,
-            _ => fallback_master_key,
+            _ => fallback_master_key
+                .expect("fallback master key should be loaded when CLI master key is missing"),
         };
         let server = args
             .server
@@ -831,8 +840,19 @@ async fn read_pipe_chunk(pipe: &NamedPipeServer) -> std::io::Result<Option<Vec<u
 
 #[cfg(test)]
 mod tests {
+    use std::{fs, path::PathBuf, sync::Mutex};
+
+    use anyhow::Result;
+    use uuid::Uuid;
+
     use super::{ResolvedRunArgs, TerminalResponder, escape_bytes};
     use crate::{cli::RunArgs, run_config::RunConfig};
+
+    static ENV_LOCK: Mutex<()> = Mutex::new(());
+
+    fn temp_home_dir() -> PathBuf {
+        std::env::temp_dir().join(format!("hurryvc-producer-test-{}", Uuid::new_v4()))
+    }
 
     #[test]
     fn resolved_run_args_falls_back_to_run_and_server_configs() {
@@ -850,7 +870,7 @@ mod tests {
                 server: "127.0.0.1:6600".into(),
                 group_key: "p-demo".into(),
             },
-            "master-demo".into(),
+            Some("master-demo".into()),
         );
 
         assert_eq!(resolved.server, "127.0.0.1:6600");
@@ -874,11 +894,55 @@ mod tests {
                 server: "127.0.0.1:6600".into(),
                 group_key: "p-demo".into(),
             },
-            "master-fallback".into(),
+            Some("master-fallback".into()),
         );
 
         assert_eq!(resolved.server, "ws://example.com/base");
         assert_eq!(resolved.master_key, "master-cli");
+    }
+
+    #[test]
+    fn resolved_run_args_load_skips_missing_server_config_when_cli_master_key_present() -> Result<()> {
+        let _guard = ENV_LOCK.lock().expect("env lock poisoned");
+        let home = temp_home_dir();
+        fs::create_dir_all(&home)?;
+        let previous_home = std::env::var_os("HOME");
+
+        // SAFETY: tests serialize process-wide environment mutations with ENV_LOCK.
+        unsafe {
+            std::env::set_var("HOME", &home);
+        }
+
+        let result = ResolvedRunArgs::load(RunArgs {
+            server: Some("https://example.com/hurryvc".into()),
+            master_key: Some("master-example".into()),
+            name: None,
+            cols: 120,
+            rows: 40,
+            cwd: None,
+            command: vec!["pwsh".into()],
+        });
+
+        match previous_home {
+            Some(value) => {
+                // SAFETY: tests serialize process-wide environment mutations with ENV_LOCK.
+                unsafe {
+                    std::env::set_var("HOME", value);
+                }
+            }
+            None => {
+                // SAFETY: tests serialize process-wide environment mutations with ENV_LOCK.
+                unsafe {
+                    std::env::remove_var("HOME");
+                }
+            }
+        }
+        let _ = fs::remove_dir_all(&home);
+
+        let resolved = result?;
+        assert_eq!(resolved.server, "https://example.com/hurryvc");
+        assert_eq!(resolved.master_key, "master-example");
+        Ok(())
     }
 
     #[test]
