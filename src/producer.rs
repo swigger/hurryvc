@@ -464,6 +464,8 @@ fn command_builder(args: &ResolvedRunArgs) -> CommandBuilder {
     let mut builder = CommandBuilder::from_argv(argv);
     if let Some(cwd) = &args.cwd {
         builder.cwd(cwd);
+    } else if let Ok(cwd) = std::env::current_dir() {
+        builder.cwd(cwd);
     }
     builder
 }
