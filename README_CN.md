@@ -48,7 +48,7 @@ server运行时需要（首次自动生成）master key，用户可以修改 `~/
 
 # 编译方法
 
-前提：安装 nodejs/cargo，windows 编译还需要安装visual studio。
+前提：安装 nodejs/cargo/python，windows 编译还需要安装visual studio。
 
 ```bash
 cd hurry-ui

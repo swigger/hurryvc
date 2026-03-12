@@ -47,7 +47,7 @@ Vue is used for the web frontend, providing colored and formatted display of ter
 
 # Build Instructions
 
-Prerequisites: Install Node.js and Cargo. Building on Windows also requires Visual Studio.
+Prerequisites: Install Node.js, python and Cargo. Building on Windows also requires Visual Studio.
 
 ```bash
 cd hurry-ui
